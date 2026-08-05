@@ -22,7 +22,14 @@
     
     <!-- Configurado com a rota oficial do FormSubmit.co -->
     <!-- LEMBRETE: Altere o e-mail abaixo para o seu e-mail de recebimento real -->
-    <form action = "https://formsubmit.co/d3e91183cf9b8be0092bc28db159844f" method = "POST" enctype = "multipart/form-data">
+    <form action="https://formsubmit.co" method="POST" enctype="multipart/form-data">
+    
+    <!-- O FormSubmit exige o seu e-mail real aqui para saber para onde enviar -->
+    <input type="hidden" name="email" value="qwert8496.tudo@gmail.com">
+    
+    <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="_subject" value="Novo Cadastro de Local Pelo Site">
+    <input type="hidden" name="_next" value="https://github.com">
         
         <!-- Configurações Obrigatórias do FormSubmit -->
         <!-- Remove o reCAPTCHA para o celular enviar os dados sem travar -->
