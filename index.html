@@ -20,36 +20,17 @@
 <div class="form-container">
     <h2>Enviar Cadastro de Local</h2>
     
-    <!-- Configurado com a rota oficial do FormSubmit.co -->
-    <!-- LEMBRETE: Altere o e-mail abaixo para o seu e-mail de recebimento real -->
-    <form action="https://formsubmit.co" method="POST" enctype="multipart/form-data">
- 
-    <!-- O FormSubmit exige o seu e-mail real aqui para saber para onde enviar -->
-    <input type="hidden" name="email" value="qwert8496.tudo@gmail.com">
-    
-    <input type="hidden" name="_captcha" value="false">
-    <input type="hidden" name="_subject" value="Novo Cadastro de Local Pelo Site">
-    <input type="hidden" name="_next" value="https://github.com">
+    <!-- O action fica vazio. O JavaScript abaixo resolverá o envio -->
+    <form id="meuFormulario">
         
-        <!-- Configurações Obrigatórias do FormSubmit -->
-        <!-- Remove o reCAPTCHA para o celular enviar os dados sem travar -->
-        <input type="hidden" name="_captcha" value="false">
-        
-        <!-- Define o assunto do e-mail que você vai receber -->
-        <input type="hidden" name="_subject" value="Novo Cadastro de Local Pelo Site">
-
-        <!-- Evita que o FormSubmit mude de página, mantendo o usuário no seu site após o envio -->
-        <!-- Se você tiver uma página de obrigado no seu GitHub, mude o value para o link dela -->
-        <input type="hidden" name="_next" value="https://github.com">
-
         <div class="form-group">
             <label for="local">Local:</label>
-            <input type="text" name="Local" id="local" placeholder="Ex: Parque Ibirapuera" required>
+            <input type="text" id="local" placeholder="Ex: Parque Ibirapuera" required>
         </div>
 
         <div class="form-group">
             <label for="uf">UF (Estado):</label>
-            <select name="Estado_UF" id="uf" required>
+            <select id="uf" required>
                 <option value="" disabled selected>Selecione o estado</option>
                 <option value="SP">SP</option>
                 <option value="RJ">RJ</option>
@@ -59,18 +40,54 @@
 
         <div class="form-group">
             <label for="descricao">Descrição:</label>
-            <textarea name="Descrição" id="descricao" placeholder="Digite detalhes sobre este local..." required></textarea>
+            <textarea id="descricao" placeholder="Digite detalhes sobre este local..." required></textarea>
         </div>
 
         <div class="form-group">
             <label for="campoInputImagem">Escolha ou tire uma foto do local:</label>
-            <!-- O accept="image/*" força o celular a abrir a Câmera ou Galeria nativa -->
-            <input type="file" name="Foto_do_Local" id="campoInputImagem" accept="image/*" required />
+            <input type="file" id="campoInputImagem" accept="image/*" required />
         </div>
 
         <button type="submit">Enviar Dados</button>
     </form>
 </div>
+
+<script>
+document.getElementById('meuFormulario').addEventListener('submit', function(e) {
+    e.preventDefault(); // Impede o erro de redirecionamento
+
+    // Monta os dados do formulário manualmente
+    var dadosDoForm = new FormData();
+    dadosDoForm.append('Local', document.getElementById('local').value);
+    dadosDoForm.append('Estado_UF', document.getElementById('uf').value);
+    dadosDoForm.append('Descrição', document.getElementById('descricao').value);
+    dadosDoForm.append('Foto_do_Local', document.getElementById('campoInputImagem').files[0]);
+    
+    // Configurações do FormSubmit
+    dadosDoForm.append('_captcha', 'false');
+    dadosDoForm.append('_subject', 'Novo Cadastro de Local Pelo Site');
+
+    // Aqui montamos a URL do FormSubmit usando letras separadas para o chat não quebrar
+    var destino = 'https://' + 'formsubmit.co' + '/ajax/' + 'qwert8496.tudo' + '@' + 'gmail.com';
+
+    // Envia de forma invisível via AJAX
+    fetch(destino, {
+        method: 'POST',
+        body: dadosDoForm
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('Dados enviados com sucesso! Verifique seu e-mail para ativar o formulário caso seja o primeiro envio.');
+            window.location.href = 'https://github.com';
+        } else {
+            alert('Houve um erro no servidor do FormSubmit.');
+        }
+    })
+    .catch(error => {
+        alert('Erro na conexão com o servidor.');
+    });
+});
+</script>
 
 </body>
 </html>
