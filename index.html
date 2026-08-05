@@ -20,14 +20,15 @@
 <div class="form-container">
     <h2>Enviar Cadastro de Local</h2>
     
-    <!-- Envio nativo do navegador para o Web3Forms: Sem travamentos de Javascript -->
-    <form action="https://api.web3forms.com/submit" method="POST" enctype="multipart/form-data">
+    <!-- Envio nativo configurado para o FormSubmit -->
+    <!-- SUBSTITUA o email abaixo pelo seu email real de recebimento -->
+    <form action="https://formsubmit.co" method="POST" enctype="multipart/form-data">
         
-        <!-- COLE A SUA CHAVE DO WEB3FORMS AQUI -->
-        <input type="hidden" name="access_key" value="b281d76d-9536-4e8e-83c9-39e400b7b7c5">
+        <!-- Configuração para desativar o reCAPTCHA no celular -->
+        <input type="hidden" name="_captcha" value="false">
 
-        <!-- Configuração para o assunto do e-mail chegar bonito -->
-        <input type="hidden" name="subject" value="Novo Cadastro de Local Pelo Site">
+        <!-- Configuração para o assunto do e-mail chegar bonito no FormSubmit -->
+        <input type="hidden" name="_subject" value="Novo Cadastro de Local Pelo Site">
 
         <div class="form-group">
             <label for="local">Local:</label>
@@ -38,7 +39,9 @@
             <label for="uf">UF (Estado):</label>
             <select name="Estado_UF" id="uf" required>
                 <option value="" disabled selected>Selecione o estado</option>
-                <option value="SP">SP</option><option value="RJ">RJ</option><option value="MG">MG</option>
+                <option value="SP">SP</option>
+                <option value="RJ">RJ</option>
+                <option value="MG">MG</option>
             </select>
         </div>
 
@@ -49,7 +52,7 @@
 
         <div class="form-group">
             <label for="campoInputImagem">Escolha ou tire uma foto do local:</label>
-            <!-- O Web3Forms recebe e anexa o arquivo original enviado de forma direta -->
+            <!-- O accept="image/*" garante que o celular abra a câmera ou a galeria nativa -->
             <input type="file" name="Foto_do_Local" id="campoInputImagem" accept="image/*" required />
         </div>
 
