@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coleta de Dados de Locais com Foto</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f6f9; display: flex; justify-content: center; }
+        .form-container { width: 100%; max-width: 450px; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { margin-top: 0; color: #333; text-align: center; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: bold; color: #555; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+        .form-group textarea { resize: vertical; height: 120px; }
+        button { background-color: #0056b3; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Enviar Cadastro de Local</h2>
+    
+    <!-- Envio nativo do navegador para o Web3Forms: Sem travamentos de Javascript -->
+    <form action="https://web3forms.com" method="POST" enctype="multipart/form-data">
+        
+        <!-- COLE A SUA CHAVE DO WEB3FORMS AQUI -->
+        <input type="hidden" name="access_key" value="b281d76d-9536-4e8e-83c9-39e400b7b7c5">
+
+        <!-- Configuração para o assunto do e-mail chegar bonito -->
+        <input type="hidden" name="subject" value="Novo Cadastro de Local Pelo Site">
+
+        <div class="form-group">
+            <label for="local">Local:</label>
+            <input type="text" name="Local" id="local" placeholder="Ex: Parque Ibirapuera" required>
+        </div>
+
+        <div class="form-group">
+            <label for="uf">UF (Estado):</label>
+            <select name="Estado_UF" id="uf" required>
+                <option value="" disabled selected>Selecione o estado</option>
+                <option value="SP">SP</option><option value="RJ">RJ</option><option value="MG">MG</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="descricao">Descrição:</label>
+            <textarea name="Descrição" id="descricao" placeholder="Digite detalhes sobre este local..." required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="campoInputImagem">Escolha ou tire uma foto do local:</label>
+            <!-- O Web3Forms recebe e anexa o arquivo original enviado de forma direta -->
+            <input type="file" name="Foto_do_Local" id="campoInputImagem" accept="image/*" required />
+        </div>
+
+        <button type="submit">Enviar Dados</button>
+    </form>
+</div>
+
+</body>
+</html>
