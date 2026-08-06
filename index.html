@@ -20,10 +20,8 @@
 <div class="form-container">
     <h2>Enviar Cadastro de Local</h2>
     
-    <!-- O JavaScript vai preencher o action abaixo automaticamente ao abrir a página -->
     <form id="meuForm" method="POST" enctype="multipart/form-data">
         
-        <!-- Configurações Obrigatórias do FormSubmit -->
         <input type="hidden" name="_captcha" value="false">
         <input type="hidden" name="_subject" value="Novo Cadastro de Local Pelo Site">
         <input type="hidden" name="_next" value="https://github.com">
@@ -50,7 +48,7 @@
 
         <div class="form-group">
             <label for="campoInputImagem">Escolha ou tire uma foto do local:</label>
-            <input type="file" name="Foto_do_Local" id="campoInputImagem" accept="image/*" required />
+            <input type="file" id="campoInputImagem" accept="image/*" required />
         </div>
 
         <button type="submit">Enviar Dados</button>
@@ -58,13 +56,73 @@
 </div>
 
 <script>
-    // Este script junta os textos abaixo para criar o link correto sem que o chat esconda nada de você
-    var parte1 = "https://formsubmit.co";
-    var parte2 = "qwert8496.tudo";
-    var parte3 = "@gmail.com";
-    
-    // Injeta a URL completa direto no formulário
-    document.getElementById("meuForm").action = parte1 + parte2 + parte3;
+    // Constrói a URL sem que o chat esconda do seu editor
+    var p1 = "https://formsubmit.co/";
+    var p2 = "qwert8496.tudo";
+    var p3 = "@gmail.com";
+    document.getElementById("meuForm").action = p1 + p2 + p3;
+
+    // Monitora o envio para comprimir a foto antes de ir para o servidor
+    document.getElementById("meuForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        
+        var form = this;
+        var inputFoto = document.getElementById("campoInputImagem");
+        
+        if (inputFoto.files.length === 0) {
+            form.submit();
+            return;
+        }
+
+        var arquivoOriginal = inputFoto.files[0];
+        var leitor = new FileReader();
+
+        leitor.onload = function(event) {
+            var img = new Image();
+            img.onload = function() {
+                // Desenha a imagem em um canvas reduzindo o tamanho máximo para 1200px
+                var canvas = document.createElement("canvas");
+                var max_size = 1200;
+                var width = img.width;
+                var height = img.height;
+
+                if (width > height) {
+                    if (width > max_size) {
+                        height *= max_size / width;
+                        width = max_size;
+                    }
+                } else {
+                    if (height > max_size) {
+                        width *= max_size / height;
+                        height = max_size;
+                    }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                var ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // Transforma o desenho em um arquivo JPEG leve e compactado
+                canvas.toBlob(function(blob) {
+                    var arquivoComprimido = new File([blob], "foto_local.jpg", { type: "image/jpeg" });
+                    
+                    // Substitui a foto pesada pela foto leve dentro do envio
+                    var dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(arquivoComprimido);
+                    inputFoto.files = dataTransfer.files;
+
+                    // Altera o name do input no último segundo para o FormSubmit processar como arquivo
+                    inputFoto.name = "Foto_do_Local";
+
+                    // Dispara o envio oficial de forma nativa e segura
+                    form.submit();
+                }, "image/jpeg", 0.7); // 0.7 é o nível de qualidade (reduz 70% do peso mantendo nitidez)
+            };
+            img.src = event.target.result;
+        };
+        leitor.readAsDataURL(arquivoOriginal);
+    });
 </script>
 
 </body>
