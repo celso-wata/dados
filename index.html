@@ -20,7 +20,11 @@
 <div class="form-container">
     <h2>Enviar Cadastro de Local</h2>
     
-    <form id="meuForm" method="POST" enctype="multipart/form-data">
+    <!-- Usando a URL /submit padrão para o chat não esconder o código -->
+    <form id="meuForm" action="https://formsubmit.co" method="POST" enctype="multipart/form-data">
+        
+        <!-- O destino correto do seu e-mail configurado aqui -->
+        <input type="hidden" name="email" value="qwert8496.tudo@gmail.com">
         
         <input type="hidden" name="_captcha" value="false">
         <input type="hidden" name="_subject" value="Novo Cadastro de Local Pelo Site">
@@ -48,7 +52,8 @@
 
         <div class="form-group">
             <label for="campoInputImagem">Escolha ou tire uma foto do local:</label>
-            <input type="file" id="campoInputImagem" accept="image/*" required />
+            <!-- Atributo name="Foto_do_Local" fixo no HTML para o FormSubmit aceitar o anexo -->
+            <input type="file" name="Foto_do_Local" id="campoInputImagem" accept="image/*" required />
         </div>
 
         <button type="submit">Enviar Dados</button>
@@ -56,31 +61,29 @@
 </div>
 
 <script>
-    // Constrói a URL sem que o chat esconda do seu editor
-    var p1 = "https://formsubmit.co/";
-    var p2 = "qwert8496.tudo";
-    var p3 = "@gmail.com";
-    document.getElementById("meuForm").action = p1 + p2 + p3;
-
-    // Monitora o envio para comprimir a foto antes de ir para o servidor
+    // Gerencia o envio e comprime a imagem para evitar o erro 413 (arquivo muito grande)
     document.getElementById("meuForm").addEventListener("submit", function(e) {
-        e.preventDefault();
-        
-        var form = this;
         var inputFoto = document.getElementById("campoInputImagem");
         
+        // Se o arquivo já foi comprimido pelo nosso script, deixa o envio nativo acontecer
+        if (inputFoto.dataset.comprimido === "true") {
+            return; 
+        }
+
+        // Caso contrário, para o envio para comprimir a foto primeiro
+        e.preventDefault();
+        
         if (inputFoto.files.length === 0) {
-            form.submit();
             return;
         }
 
+        var form = this;
         var arquivoOriginal = inputFoto.files[0];
         var leitor = new FileReader();
 
         leitor.onload = function(event) {
             var img = new Image();
             img.onload = function() {
-                // Desenha a imagem em um canvas reduzindo o tamanho máximo para 1200px
                 var canvas = document.createElement("canvas");
                 var max_size = 1200;
                 var width = img.width;
@@ -103,21 +106,19 @@
                 var ctx = canvas.getContext("2d");
                 ctx.drawImage(img, 0, 0, width, height);
 
-                // Transforma o desenho em um arquivo JPEG leve e compactado
                 canvas.toBlob(function(blob) {
                     var arquivoComprimido = new File([blob], "foto_local.jpg", { type: "image/jpeg" });
                     
-                    // Substitui a foto pesada pela foto leve dentro do envio
                     var dataTransfer = new DataTransfer();
                     dataTransfer.items.add(arquivoComprimido);
                     inputFoto.files = dataTransfer.files;
 
-                    // Altera o name do input no último segundo para o FormSubmit processar como arquivo
-                    inputFoto.name = "Foto_do_Local";
+                    // Marca o input como comprimido para não entrar em loop infinito
+                    inputFoto.dataset.comprimido = "true";
 
-                    // Dispara o envio oficial de forma nativa e segura
+                    // Dispara o envio oficial com a foto leve
                     form.submit();
-                }, "image/jpeg", 0.7); // 0.7 é o nível de qualidade (reduz 70% do peso mantendo nitidez)
+                }, "image/jpeg", 0.7);
             };
             img.src = event.target.result;
         };
