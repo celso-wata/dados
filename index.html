@@ -13,6 +13,8 @@
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
         .form-group textarea { resize: vertical; height: 120px; }
         button { background-color: #0056b3; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        .status-msg { margin-top: 10px; font-size: 13px; font-weight: bold; text-align: center; display: none; }
     </style>
 </head>
 <body>
@@ -20,12 +22,15 @@
 <div class="form-container">
     <h2>Enviar Cadastro de Local</h2>
     
-    <!-- Link oficial do Formspark corrigido com a sua ID real e sem erros de script -->
-    <form action="https://submit-form.com" method="POST" enctype="multipart/form-data">
+    <!-- Altere APENAS o final da URL abaixo colocando a ID real do seu formulário Formspark -->
+    <form id="meuFormulario" action="https://submit-form.com" method="POST">
         
         <!-- Configurações do Formspark -->
         <input type="hidden" name="_subject" value="Novo Cadastro de Local Pelo Site">
         <input type="hidden" name="_redirect" value="https://github.io">
+        
+        <!-- Campo oculto que vai carregar a imagem comprimida leve -->
+        <input type="hidden" name="Foto_Base64" id="fotoBase64">
 
         <div class="form-group">
             <label for="local">Local:</label>
@@ -49,12 +54,71 @@
 
         <div class="form-group">
             <label for="campoInputImagem">Escolha ou tire uma foto do local:</label>
-            <input type="file" name="file" id="campoInputImagem" accept="image/*" required />
+            <!-- Removido o name="file" para evitar que o HTML tente enviar o arquivo pesado original -->
+            <input type="file" id="campoInputImagem" accept="image/*" required />
         </div>
 
-        <button type="submit">Enviar Dados</button>
+        <button type="submit" id="btnEnviar">Enviar Dados</button>
+        <div id="mensagemStatus" class="status-msg">Processando imagem...</div>
     </form>
 </div>
+
+<script>
+document.getElementById('meuFormulario').addEventListener('submit', function(e) {
+    const inputImagem = document.getElementById('campoInputImagem');
+    const campoOculto = document.getElementById('fotoBase64');
+    const btn = document.getElementById('btnEnviar');
+    const status = document.getElementById('mensagemStatus');
+
+    // Se o usuário selecionou uma imagem e ela ainda não foi convertida/comprimida
+    if (inputImagem.files.length > 0 && !campoOculto.value) {
+        e.preventDefault(); // Impede o envio do formulário temporariamente
+        
+        btn.disabled = true;
+        status.style.display = 'block';
+        status.innerText = "Comprimindo imagem para evitar erros...";
+
+        const arquivo = inputImagem.files[0];
+        const leitor = new FileReader();
+
+        leitor.onload = function(event) {
+            const img = new Image();
+            img.src = event.target.result;
+
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+
+                // Define uma largura máxima de 800px (ideal para web/email e super leve)
+                const MAX_WIDTH = 800;
+                if (width > MAX_WIDTH) {
+                    height *= MAX_WIDTH / width;
+                    width = MAX_WIDTH;
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // Converte em formato JPEG reduzindo a qualidade para 60% (fica minúsculo e legível)
+                const imagemComprimidaBase64 = canvas.toDataURL('image/jpeg', 0.6);
+
+                // Salva o texto leve da imagem no campo oculto
+                campoOculto.value = imagemComprimidaBase64;
+
+                // Reenvia o formulário agora com o campo de texto preenchido
+                status.innerText = "Enviando dados com sucesso...";
+                document.getElementById('meuFormulario').submit();
+            };
+        };
+
+        leitor.readAsDataURL(arquivo);
+    }
+});
+</script>
 
 </body>
 </html>
