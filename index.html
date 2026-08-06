@@ -21,17 +21,12 @@
 <div class="form-container">
     <h2>Enviar Cadastro de Local</h2>
     
-    <!-- URL padrão /submit para evitar que o chat quebre o código -->
+    <!-- O e-mail foi inserido diretamente na URL do action abaixo -->
     <form id="meuForm" action="https://formsubmit.co" method="POST" enctype="multipart/form-data">
-        
-        <!-- Destino correto do e-mail -->
-        <input type="hidden" name="email" value="qwert8496.tudo@gmail.com">
         
         <!-- Configurações adicionais -->
         <input type="hidden" name="_captcha" value="false">
         <input type="hidden" name="_subject" value="Novo Cadastro de Local Pelo Site">
-        
-        <!-- Alterado para redirecionar para uma página neutra de sucesso para evitar loops -->
         <input type="hidden" name="_next" value="https://formsubmit.co">
 
         <div class="form-group">
@@ -65,7 +60,7 @@
 </div>
 
 <script>
-    // Comprime a foto ASSIM QUE ELA É ESCOLHIDA, liberando o formulário para envio normal
+    // Comprime a foto assim que ela é escolhida no celular
     document.getElementById("campoInputImagem").addEventListener("change", function(e) {
         var inputFoto = e.target;
         if (inputFoto.files.length === 0) return;
@@ -74,16 +69,16 @@
         var btn = document.getElementById("btnEnviar");
         
         statusText.style.display = "block";
-        btn.disabled = true; // Bloqueia o botão temporariamente enquanto otimiza
+        btn.disabled = true;
 
-        var arquivoOriginal = inputFoto.files[0];
+        var arquivoOriginal = inputFoto.files;
         var leitor = new FileReader();
 
         leitor.onload = function(event) {
             var img = new Image();
             img.onload = function() {
                 var canvas = document.createElement("canvas");
-                var max_size = 1020; // Reduz um pouco mais para garantir que fique bem leve
+                var max_size = 1020;
                 var width = img.width;
                 var height = img.height;
 
@@ -112,8 +107,8 @@
                     inputFoto.files = dataTransfer.files;
 
                     statusText.innerText = "Imagem pronta para envio!";
-                    btn.disabled = false; // Libera o botão de envio
-                }, "image/jpeg", 0.6); // Qualidade balanceada para celular móvel
+                    btn.disabled = false;
+                }, "image/jpeg", 0.6);
             };
             img.src = event.target.result;
         };
