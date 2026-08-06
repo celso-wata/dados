@@ -20,9 +20,10 @@
 <div class="form-container">
     <h2>Enviar Cadastro de Local</h2>
     
-    <!-- URL oficial com a sua chave token corrigida pelo FormSubmit -->
-    <form action="https://formsubmit.co" method="POST" enctype="multipart/form-data">
+    <!-- O script onsubmit preencherá este action automaticamente no clique do envio -->
+    <form id="meuForm" action="" method="POST" enctype="multipart/form-data" onsubmit="this.action = 'https://' + 'formsubmit.co' + '/' + 'qwert8496.tudo' + '@' + 'gmail.com';">
         
+        <!-- Configurações Obrigatórias corrigidas sem acentos nos campos -->
         <input type="hidden" name="_captcha" value="false">
         <input type="hidden" name="_subject" value="Novo Cadastro de Local Pelo Site">
         <input type="hidden" name="_next" value="https://formsubmit.co">
@@ -44,13 +45,11 @@
 
         <div class="form-group">
             <label for="descricao">Descrição:</label>
-            <!-- CORREÇÃO: Removidos os acentos do atributo name -->
             <textarea name="Descricao" id="descricao" placeholder="Digite detalhes sobre este local..." required></textarea>
         </div>
 
         <div class="form-group">
             <label for="campoInputImagem">Escolha ou tire uma foto do local:</label>
-            <!-- CORREÇÃO: Nome simplificado para evitar bloqueios do servidor -->
             <input type="file" name="file" id="campoInputImagem" accept="image/*" required />
         </div>
 
