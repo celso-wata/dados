@@ -13,6 +13,7 @@
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
         .form-group textarea { resize: vertical; height: 120px; }
         button { background-color: #0056b3; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; }
+        .status-msg { display: none; color: #0056b3; font-weight: bold; text-align: center; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -20,15 +21,18 @@
 <div class="form-container">
     <h2>Enviar Cadastro de Local</h2>
     
-    <!-- Usando a URL /submit padrão para o chat não esconder o código -->
+    <!-- URL padrão /submit para evitar que o chat quebre o código -->
     <form id="meuForm" action="https://formsubmit.co" method="POST" enctype="multipart/form-data">
         
-        <!-- O destino correto do seu e-mail configurado aqui -->
+        <!-- Destino correto do e-mail -->
         <input type="hidden" name="email" value="qwert8496.tudo@gmail.com">
         
+        <!-- Configurações adicionais -->
         <input type="hidden" name="_captcha" value="false">
         <input type="hidden" name="_subject" value="Novo Cadastro de Local Pelo Site">
-        <input type="hidden" name="_next" value="https://github.com">
+        
+        <!-- Alterado para redirecionar para uma página neutra de sucesso para evitar loops -->
+        <input type="hidden" name="_next" value="https://formsubmit.co">
 
         <div class="form-group">
             <label for="local">Local:</label>
@@ -52,32 +56,26 @@
 
         <div class="form-group">
             <label for="campoInputImagem">Escolha ou tire uma foto do local:</label>
-            <!-- Atributo name="Foto_do_Local" fixo no HTML para o FormSubmit aceitar o anexo -->
-            <input type="file" name="Foto_do_Local" id="campoInputImagem" accept="image/*" required />
+            <input type="file" id="campoInputImagem" name="Foto_do_Local" accept="image/*" required />
+            <div id="statusCompressao" class="status-msg">Otimizando imagem para o celular...</div>
         </div>
 
-        <button type="submit">Enviar Dados</button>
+        <button type="submit" id="btnEnviar">Enviar Dados</button>
     </form>
 </div>
 
 <script>
-    // Gerencia o envio e comprime a imagem para evitar o erro 413 (arquivo muito grande)
-    document.getElementById("meuForm").addEventListener("submit", function(e) {
-        var inputFoto = document.getElementById("campoInputImagem");
-        
-        // Se o arquivo já foi comprimido pelo nosso script, deixa o envio nativo acontecer
-        if (inputFoto.dataset.comprimido === "true") {
-            return; 
-        }
+    // Comprime a foto ASSIM QUE ELA É ESCOLHIDA, liberando o formulário para envio normal
+    document.getElementById("campoInputImagem").addEventListener("change", function(e) {
+        var inputFoto = e.target;
+        if (inputFoto.files.length === 0) return;
 
-        // Caso contrário, para o envio para comprimir a foto primeiro
-        e.preventDefault();
+        var statusText = document.getElementById("statusCompressao");
+        var btn = document.getElementById("btnEnviar");
         
-        if (inputFoto.files.length === 0) {
-            return;
-        }
+        statusText.style.display = "block";
+        btn.disabled = true; // Bloqueia o botão temporariamente enquanto otimiza
 
-        var form = this;
         var arquivoOriginal = inputFoto.files[0];
         var leitor = new FileReader();
 
@@ -85,7 +83,7 @@
             var img = new Image();
             img.onload = function() {
                 var canvas = document.createElement("canvas");
-                var max_size = 1200;
+                var max_size = 1020; // Reduz um pouco mais para garantir que fique bem leve
                 var width = img.width;
                 var height = img.height;
 
@@ -107,18 +105,15 @@
                 ctx.drawImage(img, 0, 0, width, height);
 
                 canvas.toBlob(function(blob) {
-                    var arquivoComprimido = new File([blob], "foto_local.jpg", { type: "image/jpeg" });
+                    var arquivoComprimido = new File([blob], "foto.jpg", { type: "image/jpeg" });
                     
                     var dataTransfer = new DataTransfer();
                     dataTransfer.items.add(arquivoComprimido);
                     inputFoto.files = dataTransfer.files;
 
-                    // Marca o input como comprimido para não entrar em loop infinito
-                    inputFoto.dataset.comprimido = "true";
-
-                    // Dispara o envio oficial com a foto leve
-                    form.submit();
-                }, "image/jpeg", 0.7);
+                    statusText.innerText = "Imagem pronta para envio!";
+                    btn.disabled = false; // Libera o botão de envio
+                }, "image/jpeg", 0.6); // Qualidade balanceada para celular móvel
             };
             img.src = event.target.result;
         };
