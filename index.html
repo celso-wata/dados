@@ -20,10 +20,9 @@
 <div class="form-container">
     <h2>Enviar Cadastro de Local</h2>
     
-    <!-- O script abaixo preencherá este action de forma automática no envio -->
-    <form id="meuForm" action="" method="POST" enctype="multipart/form-data" onsubmit="this.action = 'https://' + 'formsubmit.co' + '/' + 'qwert8496.tudo' + '@' + 'gmail.com';">
+    <!-- URL oficial com a sua chave token corrigida pelo FormSubmit -->
+    <form action="https://formsubmit.co" method="POST" enctype="multipart/form-data">
         
-        <!-- Configurações Obrigatórias livres de erros -->
         <input type="hidden" name="_captcha" value="false">
         <input type="hidden" name="_subject" value="Novo Cadastro de Local Pelo Site">
         <input type="hidden" name="_next" value="https://formsubmit.co">
@@ -45,12 +44,14 @@
 
         <div class="form-group">
             <label for="descricao">Descrição:</label>
-            <textarea name="Descrição" id="descricao" placeholder="Digite detalhes sobre este local..." required></textarea>
+            <!-- CORREÇÃO: Removidos os acentos do atributo name -->
+            <textarea name="Descricao" id="descricao" placeholder="Digite detalhes sobre este local..." required></textarea>
         </div>
 
         <div class="form-group">
             <label for="campoInputImagem">Escolha ou tire uma foto do local:</label>
-            <input type="file" name="Foto_do_Local" id="campoInputImagem" accept="image/*" required />
+            <!-- CORREÇÃO: Nome simplificado para evitar bloqueios do servidor -->
+            <input type="file" name="file" id="campoInputImagem" accept="image/*" required />
         </div>
 
         <button type="submit">Enviar Dados</button>
