@@ -20,13 +20,18 @@
 <div class="form-container">
     <h2>Enviar Cadastro de Local</h2>
     
-    <!-- O script onsubmit preencherá este action automaticamente no clique do envio -->
-    <form id="meuForm" action="" method="POST" enctype="multipart/form-data" onsubmit="this.action = 'https://' + 'formsubmit.co' + '/' + 'qwert8496.tudo' + '@' + 'gmail.com';">
+    <!-- Rota estável do Web3Forms para envio seguro de anexos -->
+    <form action="https://web3forms.com" method="POST" enctype="multipart/form-data">
         
-        <!-- Configurações Obrigatórias corrigidas sem acentos nos campos -->
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_subject" value="Novo Cadastro de Local Pelo Site">
-        <input type="hidden" name="_next" value="https://formsubmit.co">
+        <!-- CHAVE NOVA E ATIVA vinculada ao seu e-mail qwert8496.tudo@gmail.com -->
+        <input type="hidden" name="access_key" value="9e25d210-910c-4bd5-9df0-e3250b86a60d">
+
+        <!-- Configurações do e-mail recebido -->
+        <input type="hidden" name="subject" value="Novo Cadastro de Local Pelo Site">
+        <input type="hidden" name="from_name" value="Sistema de Coleta">
+        
+        <!-- Redireciona para a página oficial de sucesso deles -->
+        <input type="hidden" name="redirect" value="https://web3forms.com">
 
         <div class="form-group">
             <label for="local">Local:</label>
@@ -50,7 +55,7 @@
 
         <div class="form-group">
             <label for="campoInputImagem">Escolha ou tire uma foto do local:</label>
-            <input type="file" name="file" id="campoInputImagem" accept="image/*" required />
+            <input type="file" name="attachment" id="campoInputImagem" accept="image/*" required />
         </div>
 
         <button type="submit">Enviar Dados</button>
