@@ -20,17 +20,22 @@
 <div class="form-container">
     <h2>Enviar Cadastro de Local</h2>
     
-    <!-- O action fica vazio. O JavaScript abaixo resolverá o envio -->
-    <form id="meuFormulario">
+    <!-- O JavaScript vai preencher o action abaixo automaticamente ao abrir a página -->
+    <form id="meuForm" method="POST" enctype="multipart/form-data">
         
+        <!-- Configurações Obrigatórias do FormSubmit -->
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_subject" value="Novo Cadastro de Local Pelo Site">
+        <input type="hidden" name="_next" value="https://github.com">
+
         <div class="form-group">
             <label for="local">Local:</label>
-            <input type="text" id="local" placeholder="Ex: Parque Ibirapuera" required>
+            <input type="text" name="Local" id="local" placeholder="Ex: Parque Ibirapuera" required>
         </div>
 
         <div class="form-group">
             <label for="uf">UF (Estado):</label>
-            <select id="uf" required>
+            <select name="Estado_UF" id="uf" required>
                 <option value="" disabled selected>Selecione o estado</option>
                 <option value="SP">SP</option>
                 <option value="RJ">RJ</option>
@@ -40,12 +45,12 @@
 
         <div class="form-group">
             <label for="descricao">Descrição:</label>
-            <textarea id="descricao" placeholder="Digite detalhes sobre este local..." required></textarea>
+            <textarea name="Descrição" id="descricao" placeholder="Digite detalhes sobre este local..." required></textarea>
         </div>
 
         <div class="form-group">
             <label for="campoInputImagem">Escolha ou tire uma foto do local:</label>
-            <input type="file" id="campoInputImagem" accept="image/*" required />
+            <input type="file" name="Foto_do_Local" id="campoInputImagem" accept="image/*" required />
         </div>
 
         <button type="submit">Enviar Dados</button>
@@ -53,40 +58,13 @@
 </div>
 
 <script>
-document.getElementById('meuFormulario').addEventListener('submit', function(e) {
-    e.preventDefault(); // Impede o erro de redirecionamento
-
-    // Monta os dados do formulário manualmente
-    var dadosDoForm = new FormData();
-    dadosDoForm.append('Local', document.getElementById('local').value);
-    dadosDoForm.append('Estado_UF', document.getElementById('uf').value);
-    dadosDoForm.append('Descrição', document.getElementById('descricao').value);
-    dadosDoForm.append('Foto_do_Local', document.getElementById('campoInputImagem').files[0]);
+    // Este script junta os textos abaixo para criar o link correto sem que o chat esconda nada de você
+    var parte1 = "https://formsubmit.co";
+    var parte2 = "qwert8496.tudo";
+    var parte3 = "@gmail.com";
     
-    // Configurações do FormSubmit
-    dadosDoForm.append('_captcha', 'false');
-    dadosDoForm.append('_subject', 'Novo Cadastro de Local Pelo Site');
-
-    // Aqui montamos a URL do FormSubmit usando letras separadas para o chat não quebrar
-    var destino = 'https://' + 'formsubmit.co' + '/ajax/' + 'qwert8496.tudo' + '@' + 'gmail.com';
-
-    // Envia de forma invisível via AJAX
-    fetch(destino, {
-        method: 'POST',
-        body: dadosDoForm
-    })
-    .then(response => {
-        if (response.ok) {
-            alert('Dados enviados com sucesso! Verifique seu e-mail para ativar o formulário caso seja o primeiro envio.');
-            window.location.href = 'https://github.com';
-        } else {
-            alert('Houve um erro no servidor do FormSubmit.');
-        }
-    })
-    .catch(error => {
-        alert('Erro na conexão com o servidor.');
-    });
-});
+    // Injeta a URL completa direto no formulário
+    document.getElementById("meuForm").action = parte1 + parte2 + parte3;
 </script>
 
 </body>
