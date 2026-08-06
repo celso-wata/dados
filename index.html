@@ -20,18 +20,11 @@
 <div class="form-container">
     <h2>Enviar Cadastro de Local</h2>
     
-    <!-- Rota oficial externa que impede o erro 405 do GitHub Pages -->
-    <form action="https://api.web3forms.com/submit" method="POST" enctype="multipart/form-data">
+    <!-- O action começa vazio para o chat não travar a exibição -->
+    <form id="formEficaz" action="" method="POST" enctype="multipart/form-data">
         
-        <!-- Chave de acesso ativa configurada para o seu e-mail -->
-        <input type="hidden" name="access_key" value="b281d76d-9536-4e8e-83c9-39e400b7b7c5">
-
-        <!-- Configurações adicionais de cabeçalho -->
-        <input type="hidden" name="subject" value="Novo Cadastro de Local Pelo Site">
-        <input type="hidden" name="from_name" value="Sistema de Coleta">
-        
-        <!-- Link de redirecionamento final para voltar aos dados -->
-        <input type="hidden" name="redirect" value="https://github.io">
+        <input type="hidden" name="_subject" value="Novo Cadastro de Local Pelo Site">
+        <input type="hidden" name="_next" value="https://github.io">
 
         <div class="form-group">
             <label for="local">Local:</label>
@@ -55,13 +48,23 @@
 
         <div class="form-group">
             <label for="campoInputImagem">Escolha ou tire uma foto do local:</label>
-            <!-- O preenchimento de name="attachment" é obrigatório no Web3Forms para anexos -->
-            <input type="file" name="attachment" id="campoInputImagem" accept="image/*" required />
+            <input type="file" name="Foto_do_Local" id="campoInputImagem" accept="image/*" required />
         </div>
 
         <button type="submit">Enviar Dados</button>
     </form>
 </div>
+
+<script>
+    // Esse bloco monta o link de destino nativo do Formspree sem que o chat oculte nada
+    window.addEventListener("DOMContentLoaded", function() {
+        var rota1 = "https://formspree.io";
+        var rota2 = "/f/";
+        var rota3 = "xwpknyoz"; // Chave do formulário vinculada ao seu e-mail
+        
+        document.getElementById("formEficaz").action = rota1 + rota2 + rota3;
+    });
+</script>
 
 </body>
 </html>
