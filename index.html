@@ -19,48 +19,31 @@
 
 <div class="form-container">
     <h2>Enviar Cadastro de Local</h2>
-    
-    <!-- Rota estável do Web3Forms para envio seguro de anexos -->
-    <form action="https://web3forms.com" method="POST" enctype="multipart/form-data">
-        
-        <!-- CHAVE NOVA E ATIVA vinculada ao seu e-mail qwert8496.tudo@gmail.com -->
-        <input type="hidden" name="access_key" value="b281d76d-9536-4e8e-83c9-39e400b7b7c5">
-
-        <!-- Configurações do e-mail recebido -->
-        <input type="hidden" name="subject" value="Novo Cadastro de Local Pelo Site">
-        <input type="hidden" name="from_name" value="Sistema de Coleta">
-        
-        <!-- Redireciona para a página oficial de sucesso deles -->
-        <input type="hidden" name="redirect" value="https://web3forms.com">
-
-        <div class="form-group">
-            <label for="local">Local:</label>
-            <input type="text" name="Local" id="local" placeholder="Ex: Parque Ibirapuera" required>
-        </div>
-
-        <div class="form-group">
-            <label for="uf">UF (Estado):</label>
-            <select name="Estado_UF" id="uf" required>
-                <option value="" disabled selected>Selecione o estado</option>
-                <option value="SP">SP</option>
-                <option value="RJ">RJ</option>
-                <option value="MG">MG</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="descricao">Descrição:</label>
-            <textarea name="Descricao" id="descricao" placeholder="Digite detalhes sobre este local..." required></textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="campoInputImagem">Escolha ou tire uma foto do local:</label>
-            <input type="file" name="attachment" id="campoInputImagem" accept="image/*" required />
-        </div>
-
-        <button type="submit">Enviar Dados</button>
+    <form id="formColeta">
+        <input type="hidden" id="chaveAcesso" value="b281d76d-9536-4e8e-83c9-39e400b7b7c5">
+        <div class="form-group"><label for="local">Local:</label><input type="text" id="local" required></div>
+        <div class="form-group"><label for="uf">UF:</label><select id="uf" required><option value="" disabled selected>Estado</option><option value="SP">SP</option></select></div>
+        <div class="form-group"><label for="descricao">Descrição:</label><textarea id="descricao" required></textarea></div>
+        <div class="form-group"><label for="campoInputImagem">Foto:</label><input type="file" id="campoInputImagem" accept="image/*" required /></div>
+        <button type="submit" id="btnEnviar">Enviar Dados</button>
     </form>
 </div>
 
+<script>
+document.getElementById('formColeta').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var btn = document.getElementById('btnEnviar');
+    btn.innerText = 'Enviando...'; btn.disabled = true;
+    var formData = new FormData();
+    formData.append('access_key', document.getElementById('chaveAcesso').value);
+    formData.append('Local', document.getElementById('local').value);
+    formData.append('attachment', document.getElementById('campoInputImagem').files[0]);
+    fetch('https://api.web3forms.com/submit', { method: 'POST', body: formData })
+    .then(r => r.json()).then(d => {
+        if (d.success) { alert('Sucesso!'); window.location.reload(); }
+        else { alert('Erro: ' + d.message); btn.innerText = 'Enviar'; btn.disabled = false; }
+    });
+});
+</script>
 </body>
 </html>
